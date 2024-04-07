@@ -6,14 +6,14 @@ const Home = () => {
   const [formData, setFormData] = useState([]);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("formData")) || [];
+    const storedData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
     setFormData(storedData);
   }, []);
 
   const handleDelete = (index) => {
     const updatedData = [...formData];
     updatedData.splice(index, 1);
-    localStorage.setItem("formData", JSON.stringify(updatedData));
+    localStorage.setItem("formUserDetails", JSON.stringify(updatedData));
     setFormData(updatedData);
   };
 
@@ -22,6 +22,14 @@ const Home = () => {
     navigate("/form", { state: { formDataToEdit } });
     console.log(formDataToEdit);
   };
+
+  useEffect(() => {
+    const updatedFormData = navigate.state && navigate.state.updatedFormData;
+    if (updatedFormData) {
+      localStorage.setItem("formUserDetails", JSON.stringify(updatedFormData));
+      setFormData(updatedFormData);
+    }
+  }, [navigate.state]);
 
   return (
     <div>

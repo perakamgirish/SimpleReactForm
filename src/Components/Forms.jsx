@@ -17,64 +17,35 @@ const Forms = () => {
     isSubmitting,
     isSubmitSuccessful,
   } = formState;
-  //const formData = JSON.parse(localStorage.getItem("formData"));
-  /*console.log({
-    dirtyFields,
-    isDirty,
-    isValid,
-    isSubmitting,
-    isSubmitSuccessful,
-  });*/
-  //const watchField = watch();
-  /* const onSubmit = (data) => {
-    //console.log("form confirmed", data);
-    const formUserData =
-      JSON.parse(localStorage.getItem("formUserDetails")) || [];
-    formUserData.push(data);
-    localStorage.setItem("formUserDetails", JSON.stringify(formUserData));
-    navigate("/Summary");
-    console.log(formUserData);
-    const UserData = formUserData;
-    console.log(UserData);
-  };*/
 
-  /*React.useEffect(() => {
-    if (formData) {
-      setValue("firstname", formData.firstname);
-      setValue("lastname", formData.lastname);
-      setValue("email", formData.email);
-      setValue("PhoneNumber", formData.PhoneNumber);
-      setValue("altPhoneNumber", formData.altPhoneNumber);
-      setValue("password", formData.password);
-      setValue("recheckpassword", formData.lastname);
-      setValue("address", formData.address);
-    }
-  }, [formData, setValue]);*/
-  /*localStorage.setItem("formData", JSON.stringify(data));
-    
-    navigate("/Summary")
-    const formUserData =
-      JSON.parse(localStorage.getItem("formData")) || [];
-    formUserData.push(data);
-    localStorage.setItem("formData", JSON.stringify(formUserData));*/
-
-  const onSubmit = (data) => {
+  /*const onSubmit = (data) => {
     console.log(data);
     navigate("/Summary", { state: { data } });
-  };
-
-  /*
-  const onSubmit = (data, isVerified) => {
-    console.log(data);
-    if (isVerified) {
-      navigate("/Summary", { state: { data, isverified: true } });
-    } else {
-      navigate("/"); // Navigate to the home page if not verified
-    }
   };*/
 
-  //const formDataToEdit = location.state.formDataToEdit;
   const formDataToEdit = location.state ? location.state.formDataToEdit : null;
+
+  const onSubmit = (data) => {
+    console.log("Form submitted with data:", data); // Add debugging statement
+    const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
+
+    if (formDataToEdit) {
+      const index = formData.findIndex((item) => item.id === formDataToEdit.id);
+      if (index !== -1) {
+        formData[index] = data;
+      }
+    } else {
+      // If formDataToEdit is not available, generate a unique ID for the new data
+      data.id = Date.now();
+      formData.push(data);
+    }
+
+    localStorage.setItem("formUserDetails", JSON.stringify(formData));
+
+    console.log("Navigating to Summary page..."); // Add debugging statement
+    navigate("/Summary"); // Check if navigation is being called
+  };
+
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
@@ -232,11 +203,8 @@ const Forms = () => {
         <button className="form--btn" onClick={() => navigate("/")}>
           Cancel
         </button>
-        <button
-          className="form--btn"
-          //onClick={() => }
-          //disabled={!isDirty || !isValid || isSubmitting}
-        >
+
+        <button  type="Submit" className="form--btn" onClick={handleSubmit(onSubmit)}>
           Confirm
         </button>
       </form>

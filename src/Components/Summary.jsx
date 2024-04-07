@@ -4,40 +4,34 @@ import { useLocation, useNavigate } from "react-router-dom";
 const Summary = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-
+  
   /*useEffect(() => {
-    console.log(state.data);
-    if (!state.data) {
-      navigate("/");
-    }
-  }, []);*/
-
-  console.log(state);
-  useEffect(() => {
     console.log(state);
     if (!state?.data) {
       navigate("/");
     }
   }, []);
 
-  /*const{
-    firstname, lastname, Password, Email,address,PhoneNumber,altPhoneNumber
-  }*/
-
-  /*const [formData, setFormData] = useState(null);
-
-  useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("formData"));
-    if (storedData) {
-      setFormData(storedData);
-    }
-  }, []);*/
+ 
   const storedData = () => {
     console.log("girish");
     const formUserData = JSON.parse(localStorage.getItem("formData")) || [];
     formUserData.push(state.data);
     localStorage.setItem("formData", JSON.stringify(formUserData));
     console.log("formUserData = ", formUserData);
+    navigate("/");
+  };*/
+
+  useEffect(() => {
+    if (!state?.data) {
+      navigate("/");
+    }
+  }, [state, navigate]);
+
+  const storedData = () => {
+    const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
+    formData.push(state.data);
+    localStorage.setItem("formUserDetails", JSON.stringify(formData));
     navigate("/");
   };
 
