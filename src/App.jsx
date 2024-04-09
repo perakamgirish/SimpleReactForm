@@ -13,7 +13,6 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/Form" element={<FormPage />} />
-
         <Route path="/Summary" element={<SummaryPage />} />
         <Route path="*" element={<ErrorPage />} />
       </Routes>

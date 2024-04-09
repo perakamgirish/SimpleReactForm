@@ -6,7 +6,8 @@ const Home = () => {
   const [formData, setFormData] = useState([]);
 
   useEffect(() => {
-    const storedData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
+    const storedData =
+      JSON.parse(localStorage.getItem("formUserDetails")) || [];
     setFormData(storedData);
   }, []);
 
@@ -19,17 +20,13 @@ const Home = () => {
 
   const handleEditForm = (index) => {
     const formDataToEdit = formData[index];
-    navigate("/form", { state: { formDataToEdit } });
-    console.log(formDataToEdit);
+    navigate("/form", { state: { formDataToEdit, index } });
   };
 
-  useEffect(() => {
-    const updatedFormData = navigate.state && navigate.state.updatedFormData;
-    if (updatedFormData) {
-      localStorage.setItem("formUserDetails", JSON.stringify(updatedFormData));
-      setFormData(updatedFormData);
-    }
-  }, [navigate.state]);
+  const handleUpdateFormData = (updatedFormData) => {
+    localStorage.setItem("formUserDetails", JSON.stringify(updatedFormData));
+    setFormData(updatedFormData);
+  };
 
   return (
     <div>
@@ -39,7 +36,10 @@ const Home = () => {
           " Hit that <i>'Create Form'</i> button and let's kickstart to fill
           your detail !"
         </h4>
-        <button onClick={() => navigate("/form")}> Create Form</button>
+        <button onClick={() => navigate("/form", { state: { formData } })}>
+          {" "}
+          Create Form
+        </button>
         <hr />
       </div>
       <div className="home--div">

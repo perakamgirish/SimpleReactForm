@@ -6,9 +6,8 @@ const Forms = () => {
   const navigate = useNavigate();
   const form = useForm();
   const location = useLocation();
-  // const history = useHistory();
-
   const { register, handleSubmit, watch, formState, reset, setValue } = form;
+
   const {
     errors,
     isDirty,
@@ -18,15 +17,9 @@ const Forms = () => {
     isSubmitSuccessful,
   } = formState;
 
-  /*const onSubmit = (data) => {
-    console.log(data);
-    navigate("/Summary", { state: { data } });
-  };*/
-
   const formDataToEdit = location.state ? location.state.formDataToEdit : null;
-
   const onSubmit = (data) => {
-    console.log("Form submitted with data:", data); // Add debugging statement
+    console.log("Form submitted with data:", data);
     const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
 
     if (formDataToEdit) {
@@ -35,22 +28,19 @@ const Forms = () => {
         formData[index] = data;
       }
     } else {
-      // If formDataToEdit is not available, generate a unique ID for the new data
       data.id = Date.now();
       formData.push(data);
     }
-
-    localStorage.setItem("formUserDetails", JSON.stringify(formData));
-
-    console.log("Navigating to Summary page..."); // Add debugging statement
-    navigate("/Summary"); // Check if navigation is being called
+    console.log("Navigating to Summary page...");
+    navigate("/Summary", { state: { formData, data } });
   };
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
+    // Reset form after successful submission
+    if (formState.isSubmitSuccessful) {
       reset();
     }
-  }, [isSubmitSuccessful, reset]);
+  }, [formState.isSubmitSuccessful, reset]);
 
   return (
     <div className="form--div">
@@ -99,7 +89,7 @@ const Forms = () => {
             },
           })}
         />
-        <p className="errors--style">{errors.firstname?.message}</p>
+        <p className="errors--style">{errors.lastname?.message}</p>
 
         <label htmlFor="email">Email</label>
         <input
@@ -204,7 +194,7 @@ const Forms = () => {
           Cancel
         </button>
 
-        <button  type="Submit" className="form--btn" onClick={handleSubmit(onSubmit)}>
+        <button type="Submit" className="form--btn">
           Confirm
         </button>
       </form>

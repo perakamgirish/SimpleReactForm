@@ -1,26 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Summary = () => {
+const Summary = ({ handleUpdateFormData }) => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  
-  /*useEffect(() => {
-    console.log(state);
-    if (!state?.data) {
-      navigate("/");
-    }
-  }, []);
-
- 
-  const storedData = () => {
-    console.log("girish");
-    const formUserData = JSON.parse(localStorage.getItem("formData")) || [];
-    formUserData.push(state.data);
-    localStorage.setItem("formData", JSON.stringify(formUserData));
-    console.log("formUserData = ", formUserData);
-    navigate("/");
-  };*/
 
   useEffect(() => {
     if (!state?.data) {
@@ -29,9 +12,7 @@ const Summary = () => {
   }, [state, navigate]);
 
   const storedData = () => {
-    const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
-    formData.push(state.data);
-    localStorage.setItem("formUserDetails", JSON.stringify(formData));
+    localStorage.setItem("formUserDetails", JSON.stringify(state.formData));
     navigate("/");
   };
 
@@ -80,7 +61,7 @@ const Summary = () => {
           </ul>
 
           <button onClick={() => navigate("/Form")}>Cancel</button>
-          <button onClick={() => storedData()}>Submit</button>
+          <button onClick={storedData}>Submit</button>
         </div>
       </div>
     )
