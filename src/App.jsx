@@ -4,8 +4,6 @@ import HomePage from "./Routes/HomePage";
 import FormPage from "./Routes/FormPage";
 import SummaryPage from "./Routes/SummaryPage";
 import ErrorPage from "./Routes/ErrorPage";
-import ProtectedRoute from "./Routes/ProtectedRoute";
-//import Protechted from "./Routes/Protected";
 
 function App() {
   return (
@@ -19,6 +17,4 @@ function App() {
     </>
   );
 }
-//ProtectedRoute Component={SummaryPage}
 export default App;
-//</Routes><Route path="/formedit" element={</>}
