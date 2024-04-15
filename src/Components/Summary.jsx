@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Summary = ({ handleUpdateFormData }) => {
+const Summary = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     if (!state?.data) {
@@ -14,6 +15,14 @@ const Summary = ({ handleUpdateFormData }) => {
   const storedData = () => {
     localStorage.setItem("formUserDetails", JSON.stringify(state.formData));
     navigate("/");
+  };
+
+  const handleMouseEnter = () => {
+    setHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
   };
 
   return (
@@ -36,7 +45,12 @@ const Summary = ({ handleUpdateFormData }) => {
 
             <li>
               <strong>Password : </strong>
-              {state.data && state.data.password}
+              <span
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                {hovered ? state.data && state.data.password : "********"}
+              </span>
             </li>
 
             <li>
@@ -60,7 +74,10 @@ const Summary = ({ handleUpdateFormData }) => {
             </li>
           </ul>
 
-          <button onClick={() => navigate("/Form")}>Cancel</button>
+          <button onClick={() => navigate("/Form", { state: state.data })}>
+            Cancel
+          </button>
+
           <button onClick={storedData}>Submit</button>
         </div>
       </div>

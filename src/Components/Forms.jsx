@@ -18,8 +18,9 @@ const Forms = () => {
   } = formState;
 
   const formDataToEdit = location.state ? location.state.formDataToEdit : null;
+  const formDataFromSummary = location.state ? location.state : null;
+
   const onSubmit = (data) => {
-    console.log("Form submitted with data:", data);
     const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
 
     if (formDataToEdit) {
@@ -31,16 +32,23 @@ const Forms = () => {
       data.id = Date.now();
       formData.push(data);
     }
-    console.log("Navigating to Summary page...");
     navigate("/Summary", { state: { formData, data } });
   };
+
+  useEffect(() => {
+    if (formDataFromSummary) {
+      Object.entries(formDataFromSummary).forEach(([key, value]) => {
+        setValue(key, value);
+      });
+    }
+  }, [formDataFromSummary, setValue]);
 
   useEffect(() => {
     // Reset form after successful submission
     if (formState.isSubmitSuccessful) {
       reset();
     }
-  }, [formState.isSubmitSuccessful, reset]);
+  }, [formState.isSubmitSuccessful]); //
 
   return (
     <div className="form--div">
@@ -138,37 +146,61 @@ const Forms = () => {
           })}
         />
 
-        <label htmlFor="password">Password</label>
-        <input
-          defaultValue={formDataToEdit ? formDataToEdit.password : ""}
-          type="password"
-          placeholder="Password"
-          id="password"
-          {...register("password", {
-            required: "Password is required",
-            pattern: {
-              value:
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-              message:
-                "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-            },
-          })}
-        />
+        {!formDataToEdit && (
+          <>
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              placeholder="Password"
+              id="password"
+              {...register("password", {
+                required: "Password is required",
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+                },
+              })}
+            />
+            <p className="errors--style">{errors.password?.message} </p>
 
-        <p className="errors--style">{errors.password?.message}</p>
+            <input
+              type="password"
+              placeholder="Re-Check Password"
+              id="recheckpassword"
+              {...register("recheckpassword", {
+                required: "Re-Check Password is required",
+                validate: (value) =>
+                  value === watch("password") || "Passwords do not match",
+              })}
+            />
+            <p className="errors--style">{errors.recheckpassword?.message}</p>
+          </>
+        )}
 
-        <input
-          defaultValue={formDataToEdit ? formDataToEdit.recheckpassword : ""}
-          type="password"
-          placeholder="Re-Check Password"
-          id="recheckpassword"
-          {...register("recheckpassword", {
-            validate: (value) =>
-              value === watch("password") || "Passwords do not match",
-          })}
-        />
+        {formDataToEdit && (
+          <>
+            <input
+              type="hidden"
+              value={formDataToEdit.password}
+              {...register("password", { required: false })}
+            />
+            <input
+              type="hidden"
+              value={formDataToEdit.recheckpassword}
+              {...register("recheckpassword", { required: false })}
+            />
+            <div>
+              <p>Password </p>
+              <p className="errors--style">
+                {formDataToEdit.firstname} {formDataToEdit.lastname} you can't
+                Edit the password in the EDIT FORM PAGE.
+              </p>
+            </div>
+          </>
+        )}
 
-        <p className="errors--style">{errors.recheckpassword?.message}</p>
         <label htmlFor="address">Address</label>
         <br />
         <textarea

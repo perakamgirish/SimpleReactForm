@@ -23,23 +23,16 @@ const Home = () => {
     navigate("/form", { state: { formDataToEdit, index } });
   };
 
-  const handleUpdateFormData = (updatedFormData) => {
-    localStorage.setItem("formUserDetails", JSON.stringify(updatedFormData));
-    setFormData(updatedFormData);
-  };
-
   return (
     <div>
       <div className="home-header">
         <h1>Hey Welcome, newcomers!</h1>
         <h4>
-          " Hit that <i>'Create Form'</i> button and let's kickstart to fill
-          your detail !"
+          " Hit the <i>'Create Form'</i> button and kickstart to fill your
+          details !"
         </h4>
-        <button onClick={() => navigate("/form", { state: { formData } })}>
-          {" "}
-          Create Form
-        </button>
+
+        <button onClick={() => navigate("/form")}> Create Form</button>
         <hr />
       </div>
       <div className="home--div">
