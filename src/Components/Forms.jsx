@@ -20,19 +20,28 @@ const Forms = () => {
   const formDataToEdit = location.state ? location.state.formDataToEdit : null;
   const formDataFromSummary = location.state ? location.state : null;
 
-  const onSubmit = (data) => {
-    const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
+  // const onSubmit = (data) => {
+  //   const formData = JSON.parse(localStorage.getItem("formUserDetails")) || [];
 
-    if (formDataToEdit) {
-      const index = formData.findIndex((item) => item.id === formDataToEdit.id);
-      if (index !== -1) {
-        formData[index] = data;
-      }
-    } else {
-      data.id = Date.now();
-      formData.push(data);
-    }
-    navigate("/Summary", { state: { formData, data } });
+  //   if (formDataToEdit) {
+  //     const index = formData.findIndex((item) => item.id === formDataToEdit.id);
+  //     if (index !== -1) {
+  //       formData[index] = data;
+  //     }
+  //   } else {
+  //     data.id = Date.now();
+  //     formData.push(data);
+  //   }
+  //   //navigate("/Summary", { state: { formData, data } });
+  //   console.log(formData);
+  //   console.log(data)
+  // };
+
+  const onSubmit = (data) => {
+    // Navigate to the Summary page and pass the form data
+    // navigate("/Summary", { state: { data } });
+    console.log({ state: { data } });
+    navigate("/Summary", { state: { formDataToEdit, data } });
   };
 
   useEffect(() => {
@@ -59,13 +68,13 @@ const Forms = () => {
         onSubmit={handleSubmit(onSubmit)}
         noValidate
       >
-        <label htmlFor="firstname">First Name</label>
+        <label htmlFor="firstName">First Name</label>
         <input
           type="text"
-          defaultValue={formDataToEdit ? formDataToEdit.firstname : ""}
+          defaultValue={formDataToEdit ? formDataToEdit.firstName : ""}
           placeholder="First Name"
-          id="firstname"
-          {...register("firstname", {
+          id="firstName"
+          {...register("firstName", {
             required: "First Name is required",
             minLength: {
               value: 2,
@@ -79,13 +88,13 @@ const Forms = () => {
         />
         <p className="errors--style">{errors.firstname?.message}</p>
 
-        <label htmlFor="lastname">Last Name</label>
+        <label htmlFor="lastName">Last Name</label>
         <input
-          defaultValue={formDataToEdit ? formDataToEdit.lastname : ""}
+          defaultValue={formDataToEdit ? formDataToEdit.lastName : ""}
           type="text"
           placeholder="Last Name"
-          id="lastname"
-          {...register("lastname", {
+          id="lastName"
+          {...register("lastName", {
             required: "Last Name is required",
             minLength: {
               value: 2,
@@ -116,13 +125,13 @@ const Forms = () => {
 
         <p className="errors--style">{errors.email?.message}</p>
 
-        <label htmlFor="phoneNumber">Primary Phone Number</label>
+        <label htmlFor="primaryPhoneNumber">Primary Phone Number</label>
         <input
-          defaultValue={formDataToEdit ? formDataToEdit.PhoneNumber : ""}
+          defaultValue={formDataToEdit ? formDataToEdit.primaryPhoneNumber : ""}
           type="text"
           placeholder="Primary Phone Number"
-          id="PhoneNumber"
-          {...register("PhoneNumber", {
+          id="primaryPhoneNumber"
+          {...register("primaryPhoneNumber", {
             required: "Phone Number is required",
             pattern: {
               value: /^[+]?[\d\-().\s]{6,15}[\d]$/,
@@ -132,13 +141,15 @@ const Forms = () => {
         />
         <p className="errors--style">{errors.PhoneNumber?.message}</p>
 
-        <label htmlFor="altPhoneNumber"> Secondary Phone Number</label>
+        <label htmlFor="secondaryPhoneNumber"> Secondary Phone Number</label>
         <input
-          defaultValue={formDataToEdit ? formDataToEdit.altPhoneNumber : ""}
+          defaultValue={
+            formDataToEdit ? formDataToEdit.secondaryPhoneNumber : ""
+          }
           type="text"
           placeholder="Secondary Phone Number"
-          id="altPhoneNumber"
-          {...register("altPhoneNumber", {
+          id="secondaryPhoneNumber"
+          {...register("secondaryPhoneNumber", {
             pattern: {
               value: /^[+]?[\d\-().\s]{6,15}[\d]$/,
               message: "Invalid phone number format",
@@ -194,7 +205,7 @@ const Forms = () => {
             <div>
               <p>Password </p>
               <p className="errors--style">
-                {formDataToEdit.firstname} {formDataToEdit.lastname} you can't
+                {formDataToEdit.firstName} {formDataToEdit.lastName} you can't
                 Edit the password in the EDIT FORM PAGE.
               </p>
             </div>

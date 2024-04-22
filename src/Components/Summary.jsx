@@ -12,9 +12,59 @@ const Summary = () => {
     }
   }, [state, navigate]);
 
-  const storedData = () => {
-    localStorage.setItem("formUserDetails", JSON.stringify(state.formData));
-    navigate("/");
+  const handleSubmit = async () => {
+    if (state.data.formDataToEdit && state.data.formDataToEdit._id) {
+      // Update existing user
+      await updateUser();
+      navigate("/");
+    } else {
+      // Add new user
+      await addUser();
+      navigate("/");
+    }
+  };
+
+  const addUser = async () => {
+    try {
+      const response = await fetch("http://localhost:2000/api/Add-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(state.data),
+      });
+      if (response.ok) {
+        // User added successfully
+        console.log("User added successfully");
+      } else {
+        // Handle error
+        console.error("Failed to add user");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const updateUser = async () => {
+    try {
+      const userId = state.data.formDataToEdit._id; // Get _id from the request body
+      const response = await fetch("http://localhost:2000/api/update-user", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ...state.data, _id: userId }), // Include _id in the request body
+      });
+      if (response.ok) {
+        // User updated successfully
+        console.log("User updated successfully");
+      } else {
+        // Handle error
+        console.error("Failed to update user");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleMouseEnter = () => {
@@ -23,6 +73,10 @@ const Summary = () => {
 
   const handleMouseLeave = () => {
     setHovered(false);
+  };
+
+  const handleCancel = () => {
+    navigate("/Form", { state: state.data });
   };
 
   return (
@@ -35,12 +89,12 @@ const Summary = () => {
           <ul>
             <li>
               <strong>First Name : </strong>
-              {state.data && state.data.firstname}
+              {state.data && state.data.firstName}
             </li>
 
             <li>
               <strong>Last Name : </strong>
-              {state.data && state.data.lastname}
+              {state.data && state.data.lastName}
             </li>
 
             <li>
@@ -65,20 +119,17 @@ const Summary = () => {
 
             <li>
               <strong>Primary Phone Number : </strong>
-              {state.data && state.data.PhoneNumber}
+              {state.data && state.data.primaryPhoneNumber}
             </li>
 
             <li>
               <strong>Secondary Phone Number : </strong>
-              {state.data && state.data.altPhoneNumber}
+              {state.data && state.data.secondaryPhoneNumber}
             </li>
           </ul>
 
-          <button onClick={() => navigate("/Form", { state: state.data })}>
-            Cancel
-          </button>
-
-          <button onClick={storedData}>Submit</button>
+          <button onClick={handleCancel}>Cancel</button>
+          <button onClick={handleSubmit}>Submit</button>
         </div>
       </div>
     )

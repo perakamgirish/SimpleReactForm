@@ -5,22 +5,67 @@ const Home = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState([]);
 
+  // useEffect(() => {
+  //   const storedData =
+  //     JSON.parse(localStorage.getItem("formUserDetails")) || [];
+  //   setFormData(storedData);
+  // }, []);
+
   useEffect(() => {
-    const storedData =
-      JSON.parse(localStorage.getItem("formUserDetails")) || [];
-    setFormData(storedData);
+    fetch("http://localhost:2000/api/All-users")
+      .then((response) => {
+        if (!response.ok) {
+          // checking the network response
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setFormData(data); // Update the state with fetched data
+      })
+      .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  const handleDelete = (index) => {
-    const updatedData = [...formData];
-    updatedData.splice(index, 1);
-    localStorage.setItem("formUserDetails", JSON.stringify(updatedData));
-    setFormData(updatedData);
-  };
+  // const handleDelete = (index) => {
+  //   const updatedData = [...formData];
+  //   updatedData.splice(index, 1);
+  //   localStorage.setItem("formUserDetails", JSON.stringify(updatedData));
+  //   setFormData(updatedData);
+  // };
 
-  const handleEditForm = (index) => {
-    const formDataToEdit = formData[index];
-    navigate("/form", { state: { formDataToEdit, index } });
+  const handleDelete = (_id, index) => {
+    fetch(`http://localhost:2000/api/delete/${_id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const updatedData = [...formData];
+        updatedData.splice(index, 1);
+        setFormData(updatedData);
+        return response
+      })
+      .catch((error) => console.error("Error deleting data:", error));
+  };
+  
+  // const handleEditForm = (index) => {
+  //   const formDataToEdit = formData[index];
+  //   navigate("/form", { state: { formDataToEdit, index } });
+  // };
+
+  const handleEditForm = (_id) => {
+    fetch(`http://localhost:2000/api/User/${_id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((userData) => {
+        navigate("/form", { state: { formDataToEdit: userData } });
+      })
+      .catch((error) => console.error("Error fetching user data:", error));
   };
 
   return (
@@ -57,16 +102,25 @@ const Home = () => {
           <tbody>
             {formData.map((item, index) => (
               <tr key={index}>
-                <td>{item.firstname}</td>
-                <td>{item.lastname}</td>
+                <td>{item.firstName}</td>
+                <td>{item.lastName}</td>
                 <td>{item.email}</td>
-                <td>{item.PhoneNumber}</td>
-                <td>{item.altPhoneNumber ? item.altPhoneNumber : "---"}</td>
+                <td>{item.primaryPhoneNumber}</td>
+                <td>
+                  {item.secondaryPhoneNumber
+                    ? item.secondaryPhoneNumber
+                    : "---"}
+                </td>
                 <td>{"*".repeat(item.password.length)}</td>
                 <td>{item.address}</td>
                 <td>
-                  <button onClick={() => handleEditForm(index)}>Edit</button>
-                  <button onClick={() => handleDelete(index)}>Delete</button>
+                  {/* <button onClick={() => handleEditForm(index)}>Edit</button>
+                  <button onClick={() => handleDelete(index)}>Delete</button> */}
+
+                  <button onClick={() => handleEditForm(item._id)}>Edit</button>
+                  <button onClick={() => handleDelete(item._id, index)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
