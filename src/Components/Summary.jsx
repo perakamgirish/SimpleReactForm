@@ -12,6 +12,10 @@ const Summary = () => {
     }
   }, [state, navigate]);
 
+  // const storedData = () => {
+  //   localStorage.setItem("formUserDetails", JSON.stringify(state.formData));
+  //   navigate("/");
+
   const handleSubmit = async () => {
     if (state.data.formDataToEdit && state.data.formDataToEdit._id) {
       // Update existing user
